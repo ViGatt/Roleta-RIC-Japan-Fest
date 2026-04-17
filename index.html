@@ -6,33 +6,25 @@
 <title>Quiz do Saneamento – RIC Ambiental</title>
 <link rel="icon" href="drop.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+
 <style>
- /* ─── RESET & BASE ─── */
+  /* ─── RESET & BASE ─── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  
   html, body { 
-    position: fixed; /* Trava a tela no lugar, impedindo qualquer scroll */
-    top: 0; left: 0; right: 0; bottom: 0;
     width: 100%; 
     height: 100%; 
     overflow: hidden; 
     font-family: 'Nunito', sans-serif; 
     background: #0E75A8; 
-    touch-action: none; /* Desativa a capacidade de arrastar a tela pra baixo ou pros lados */
+    position: fixed; /* Trava o scroll no mobile */
+    top: 0; left: 0; right: 0; bottom: 0;
+    touch-action: none;
   }
 
   /* ─── BACKGROUND WRAPPER ─── */
   #app {
     position: absolute; 
-    top: 0; left: 0; right: 0; bottom: 0; 
-    width: 100%; 
-    height: 100%;
-    background: linear-gradient(160deg, #1AAAD4 0%, #1590C0 40%, #0E75A8 100%);
-    overflow: hidden;
-    display: flex; 
-    flex-direction: column;
-  }
-    
+    top: 0; bottom: 0; left: 0; right: 0; 
     background: linear-gradient(160deg, #1AAAD4 0%, #1590C0 40%, #0E75A8 100%);
     overflow: hidden;
     display: flex; 
@@ -41,46 +33,34 @@
 
   /* ─── WAVE PATTERN OVERLAY ─── */
   #app::before {
-    content: '';
-    position: absolute; inset: 0;
-    background-image: repeating-radial-gradient(ellipse at 60% 50%,
-      transparent 0px, transparent 28px, rgba(255,255,255,0.045) 28px, rgba(255,255,255,0.045) 30px
-    );
-    background-size: 200px 80px;
-    pointer-events: none; z-index: 0;
+    content: ''; position: absolute; inset: 0;
+    background-image: repeating-radial-gradient(ellipse at 60% 50%, transparent 0px, transparent 28px, rgba(255,255,255,0.045) 28px, rgba(255,255,255,0.045) 30px);
+    background-size: 200px 80px; pointer-events: none; z-index: 0;
   }
 
   /* ─── ELEMENTOS GLOBAIS FLUIDOS (ONDAS) ─── */
   .deco { position: absolute; pointer-events: none; z-index: 5; opacity: 0.95; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); }
   .deco-tl { top: 0; left: -90px; rotate: 180deg; width: 25vw; min-width: 150px; max-width: 300px; }
   .deco-br { bottom: 0; right: -90px; width: 35vw; min-width: 200px; max-width: 400px; }
-  
-  .global-logo-bottom {
-    position: absolute; bottom: -120px; left: 50%; transform: translateX(-50%);
-    z-index: 30; pointer-events: none; display: flex; justify-content: center; align-items: center;
-  }
+  .global-logo-bottom { position: absolute; bottom: -120px; left: 50%; transform: translateX(-50%); z-index: 30; pointer-events: none; display: flex; justify-content: center; align-items: center; }
   .global-logo-bottom img { height: 300px; width: auto; object-fit: contain; }
 
   /* ─── NOVOS ATIVOS DECORATIVOS E ANIMAÇÕES ─── */
   .deco-ativo4 { top: 15%; right: -2%; width: 22vw; min-width: 150px; max-width: 280px; opacity: 0.35; animation: floatHorizontal 12s ease-in-out infinite alternate; }
   .deco-ativo5 { bottom: 12%; left: -2%; width: 18vw; min-width: 120px; max-width: 220px; opacity: 0.45; animation: floatHorizontalReverse 15s ease-in-out infinite alternate; }
   .deco-ativo3 { top: 35%; right: 3%; height: 30vh; width: auto; min-height: 150px; max-height: 350px; opacity: 0.25; animation: floatVertical 10s ease-in-out infinite alternate; }
-  
   @keyframes floatHorizontal { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(-25px, 15px) rotate(3deg); } }
   @keyframes floatHorizontalReverse { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(25px, -15px) rotate(-3deg); } }
   @keyframes floatVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-30px); } }
-
   .deco-ativo4-alt { top: 45%; left: 2%; width: 15vw; min-width: 100px; max-width: 200px; opacity: 0.25; animation: floatAlt4 14s ease-in-out infinite alternate; }
   .deco-ativo5-alt { top: 8%; right: 35%; width: 12vw; min-width: 80px; max-width: 150px; opacity: 0.3; animation: floatAlt5 11s ease-in-out infinite alternate; }
   .deco-ativo3-alt { bottom: 25%; right: 18%; height: 18vh; width: auto; min-height: 90px; opacity: 0.2; animation: floatAlt3 13s ease-in-out infinite alternate; }
-
   .deco-ativo5-extra1 { top: 30%; left: 15%; width: 10vw; min-width: 80px; max-width: 140px; opacity: 0.15; animation: floatExtra1 17s ease-in-out infinite alternate; }
   .deco-ativo4-extra2 { top: 12%; right: 20%; width: 14vw; min-width: 100px; max-width: 180px; opacity: 0.2; animation: floatExtra2 20s ease-in-out infinite alternate; }
   .deco-ativo3-extra1 { bottom: 35%; left: -3%; height: 22vh; width: auto; min-height: 120px; opacity: 0.15; animation: floatExtra3 22s ease-in-out infinite alternate; }
   .deco-ativo5-extra2 { bottom: 18%; left: 28%; width: 11vw; min-width: 90px; max-width: 160px; opacity: 0.25; animation: floatExtra4 15s ease-in-out infinite alternate; }
   .deco-ativo4-extra3 { top: 18%; left: 8%; width: 24vw; min-width: 180px; max-width: 320px; opacity: 0.12; animation: floatExtra5 18s ease-in-out infinite alternate; }
   .deco-ativo3-extra2 { top: 25%; left: 25%; height: 28vh; width: auto; min-height: 150px; opacity: 0.1; animation: floatExtra6 25s ease-in-out infinite alternate; }
-
   @keyframes floatExtra5 { 0% { transform: translate(0, 0) rotate(12deg) scale(0.95); } 100% { transform: translate(25px, 20px) rotate(8deg) scale(1.05); } }
   @keyframes floatExtra6 { 0% { transform: translate(0, 0) rotate(-35deg); } 100% { transform: translate(-20px, 25px) rotate(-30deg); } }
   @keyframes floatExtra1 { 0% { transform: translate(0, 0) rotate(15deg) scale(0.9); } 100% { transform: translate(-15px, 20px) rotate(10deg) scale(1); } }
@@ -94,59 +74,27 @@
   /* ─── SCREENS ─── */
   .screen {
     position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-    z-index: 10; opacity: 0; pointer-events: none;
-    transition: opacity 0.4s ease, transform 0.4s ease;
-    transform: translateX(50px);
+    z-index: 10; opacity: 0; pointer-events: none; transition: opacity 0.4s ease, transform 0.4s ease; transform: translateX(50px);
   }
   .screen.active { opacity: 1; pointer-events: all; transform: translateX(0); }
   .screen.exit { opacity: 0; transform: translateX(-50px); }
 
   /* ─── ELEMENTOS UI ─── */
   .logo-area { position: absolute; top: 22px; right: 30px; z-index: 20; display: flex; align-items: center; gap: 10px; }
-  .logo-circle {
-    width: 100px; height: 100px; border: 3px solid rgba(255,255,255,0.9); border-radius: 50%;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    background: rgba(255,255,255,0.1); backdrop-filter: blur(4px);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    animation: logoFloatQuiz 3.5s ease-in-out infinite; /* A animação fica aqui */
-}
+  .logo-circle { width: 100px; height: 100px; border: 3px solid rgba(255,255,255,0.9); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); animation: logoFloatQuiz 3.5s ease-in-out infinite; }
   .logo-circle span { font-size: 10px; font-weight: 900; color: #fff; letter-spacing: 1px; }
-
-  .quiz-title {
-    font-size: clamp(28px, 4.5vw, 58px); font-weight: 900; color: #fff;
-    text-shadow: 0 3px 12px rgba(0,0,0,0.25); letter-spacing: 2px; text-align: center;
-    text-transform: uppercase; position: absolute; top: 30px; left: 50%; transform: translateX(-50%); z-index: 5;
-  }
+  .quiz-title { font-size: clamp(28px, 4.5vw, 58px); font-weight: 900; color: #fff; text-shadow: 0 3px 12px rgba(0,0,0,0.25); letter-spacing: 2px; text-align: center; text-transform: uppercase; position: absolute; top: 30px; left: 50%; transform: translateX(-50%); z-index: 5; }
 
   /* ─── COMPONENTES DO QUIZ ─── */
-  .question-box {
-    background: rgba(100,210,240,0.85); border-radius: 22px; padding: 28px 44px;
-    max-width: 880px; width: 88%; text-align: center; font-size: clamp(18px, 2.6vw, 32px); font-weight: 800; color: #1A3E60;
-    margin-bottom: 22px; box-shadow: 0 8px 32px rgba(0,80,140,0.18); backdrop-filter: blur(8px);
-  }
-
-  .answers-box {
-    background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); border-radius: 20px;
-    padding: 26px 44px; max-width: 880px; width: 88%; box-shadow: 0 6px 24px rgba(0,80,140,0.14); backdrop-filter: blur(8px);
-  }
-  .answer-item {
-    font-size: clamp(16px, 2.2vw, 26px); font-weight: 700; color: #fff; background: rgba(0,0,0,0.1);
-    padding: 12px 20px; margin-bottom: 10px; border-radius: 10px;
-    transition: all 0.3s; cursor: pointer; border: 2px solid transparent;
-  }
+  .question-box { background: rgba(100,210,240,0.85); border-radius: 22px; padding: 28px 44px; max-width: 880px; width: 88%; text-align: center; font-size: clamp(18px, 2.6vw, 32px); font-weight: 800; color: #1A3E60; margin-bottom: 22px; box-shadow: 0 8px 32px rgba(0,80,140,0.18); backdrop-filter: blur(8px); }
+  .answers-box { background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); border-radius: 20px; padding: 26px 44px; max-width: 880px; width: 88%; box-shadow: 0 6px 24px rgba(0,80,140,0.14); backdrop-filter: blur(8px); }
+  .answer-item { font-size: clamp(16px, 2.2vw, 26px); font-weight: 700; color: #fff; background: rgba(0,0,0,0.1); padding: 12px 20px; margin-bottom: 10px; border-radius: 10px; transition: all 0.3s; cursor: pointer; border: 2px solid transparent; }
   .answer-item:hover:not(.disabled) { background: rgba(255,255,255,0.2); transform: scale(1.02); }
   .answer-item.correct { background: #2DC653; color: #fff; border-color: #fff; transform: scale(1.03); box-shadow: 0 5px 15px rgba(45, 198, 83, 0.4); }
   .answer-item.wrong { background: #E53030; color: #fff; opacity: 0.7; }
   .answer-item.disabled { pointer-events: none; }
-
   .tf-row { display: flex; gap: 36px; justify-content: center; }
-  .tf-btn {
-    display: flex; align-items: center; gap: 16px; padding: 18px 44px; border-radius: 60px; border: 2px solid transparent; cursor: pointer;
-    font-size: clamp(20px,2.5vw,30px); font-weight: 900; letter-spacing: 2px; box-shadow: 0 8px 24px rgba(0,0,0,0.22); transition: all 0.3s;
-  }
+  .tf-btn { display: flex; align-items: center; gap: 16px; padding: 18px 44px; border-radius: 60px; border: 2px solid transparent; cursor: pointer; font-size: clamp(20px,2.5vw,30px); font-weight: 900; letter-spacing: 2px; box-shadow: 0 8px 24px rgba(0,0,0,0.22); transition: all 0.3s; }
   .tf-btn:hover:not(:disabled) { transform: scale(1.05); }
   .tf-btn.verdadeiro { background: rgba(45, 198, 83, 0.8); color: #fff; backdrop-filter: blur(5px);}
   .tf-btn.falso { background: rgba(229, 48, 48, 0.8); color: #fff; backdrop-filter: blur(5px);}
@@ -154,16 +102,10 @@
   .tf-btn.correct-tf { background: #2DC653; border-color:#fff; transform: scale(1.08); box-shadow: 0 0 0 5px rgba(255,255,255,0.5); }
   .tf-btn.wrong-tf { background: #E53030; opacity: 0.5; transform: scale(0.95); }
   .tf-btn:disabled { cursor: default; }
-
   .nav-row { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); display: flex; gap: 18px; z-index: 20; }
-  .nav-btn {
-    padding: 14px 40px; border-radius: 50px; border: 2px solid #fff;
-    background: #fff; color: #1A6090; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 1px;
-    transition: all 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-  }
+  .nav-btn { padding: 14px 40px; border-radius: 50px; border: 2px solid #fff; background: #fff; color: #1A6090; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 1px; transition: all 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
   .nav-btn:hover { background: #f0f0f0; transform: scale(1.04); }
   .nav-btn.hidden { display: none; }
-
   .q-badge { position: absolute; top: 80px; left: 25px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-weight: 800; font-size: 14px; padding: 8px 18px; border-radius: 30px; z-index: 20; backdrop-filter: blur(4px); }
   .progress-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; background: rgba(255,255,255,0.2); z-index: 20; }
   .progress-fill { height: 100%; background: #4DD0E1; transition: width 0.6s; border-radius: 3px; }
@@ -171,64 +113,39 @@
   .explanation.show { opacity: 1; }
 
   /* ─── TELA DE LOGIN (CPF) ─── */
-  /* ─── TELA DE LOGIN (CPF) ─── */
-  .cpf-input {
-    padding: 16px 25px; border-radius: 40px; border: 2px solid #fff;
-    background: rgba(255,255,255,0.15); color: #fff; font-size: 26px; font-weight: 900;
-    text-align: center; outline: none; margin-bottom: 30px; width: 100%; max-width: 380px;
-    backdrop-filter: blur(5px); transition: all 0.3s;
-  }
+  .cpf-input { padding: 16px 25px; border-radius: 40px; border: 2px solid #fff; background: rgba(255,255,255,0.15); color: #fff; font-size: 26px; font-weight: 900; text-align: center; outline: none; margin-bottom: 30px; width: 100%; max-width: 380px; backdrop-filter: blur(5px); transition: all 0.3s; }
   .cpf-input::placeholder { color: rgba(255,255,255,0.7); font-weight: 700; font-size: 20px;}
   .cpf-input:focus { background: rgba(255,255,255,0.25); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
-
-  .login-error-box {
-    margin-top: 25px; background: #0F3A56; /* Azul escuro do seu print */
-    padding: 18px 25px; border-radius: 12px; display: none;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; max-width: 450px;
-    text-align: center;
-  }
-  
-  .btn-override {
-    margin-top: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
-    color: #fff; border-radius: 20px; padding: 6px 15px; cursor: pointer; font-size: 12px; font-weight: bold;
-    transition: all 0.2s;
-  }
+  .login-error-box { margin-top: 25px; background: #0F3A56; padding: 18px 25px; border-radius: 12px; display: none; box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; max-width: 450px; text-align: center; }
+  .btn-override { margin-top: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3); color: #fff; border-radius: 20px; padding: 6px 15px; cursor: pointer; font-size: 12px; font-weight: bold; transition: all 0.2s; }
   .btn-override:hover { background: rgba(255,255,255,0.2); }
 
-  /* ─── HOME E RESULTADO ─── */
-.home-content { 
-    display: flex; 
-    flex-direction: column; 
-    align-items: center; 
-    gap: 20px; 
-    z-index: 10; 
-    width: 100%; 
-    padding: 20px;
-    max-height: 100%; /* Limita a altura ao tamanho do ecrã */
-    overflow-y: auto; /* Permite rolar apenas o conteúdo se faltar espaço */
-  }
-  .home-logo { margin-bottom: 40px;width: 170px; height: 170px; border: 4px solid rgba(255,255,255,0.9); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 0 0 8px rgba(255,255,255,0.15), 0 20px 60px rgba(0,0,0,0.2); animation: logoFloat 3s ease-in-out infinite; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); }
-@keyframes logoFloat { 
-    0%, 100% { transform: translateY(-20px); } /* Posição inicial já começa mais alta */
-    50% { transform: translateY(-40px); }      /* Ponto mais alto da flutuação */
-
-  } 
-  @keyframes logoFloatQuiz { 
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); } 
-}
-  .home-logo span { font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 2px; }
-  h1.main-title { font-size: clamp(36px,6vw,80px); font-weight: 900; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,0.3); letter-spacing: 3px; text-align: center; line-height: 1.1; text-transform: uppercase; margin-bottom: 0;}
-  .home-subtitle { font-size: 20px; color: rgba(255,255,255,0.9); font-weight: 600; text-align: center; margin-bottom: 10px;}
+  /* ─── HOME E RESULTADO (BASE PC) ─── */
+  .home-content { display: flex; flex-direction: column; align-items: center; justify-content: center; z-index: 10; width: 100%; height: 100%; padding: 20px; box-sizing: border-box; }
   
-  .home-btns { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+  /* Logotipo na Home (PC) */
+  #home .home-logo { margin-top: 50px; margin-bottom: 30px; width: 170px; height: 170px; border: 4px solid rgba(255,255,255,0.9); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 0 0 8px rgba(255,255,255,0.15), 0 20px 60px rgba(0,0,0,0.2); animation: logoFloat 3s ease-in-out infinite; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); }
+  #home .home-logo span { font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 2px; }
+  
+  /* Logotipo no Resultado (PC) */
+  #result .home-logo { margin-top: 50px; margin-bottom: -10px; width: 130px; height: 130px; border: 4px solid rgba(255,255,255,0.9); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; animation: logoFloat 3s ease-in-out infinite; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); box-shadow: 0 0 0 8px rgba(255,255,255,0.15); }
+  
+  @keyframes logoFloat { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-30px); } }
+  @keyframes logoFloatQuiz { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
+
+  h1.main-title { font-size: clamp(36px,6vw,80px); font-weight: 900; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,0.3); letter-spacing: 3px; text-align: center; line-height: 1.1; text-transform: uppercase; margin-bottom: 10px;}
+  .home-subtitle { font-size: 20px; color: rgba(255,255,255,0.9); font-weight: 600; text-align: center; margin-bottom: 20px;}
+  .home-btns { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; margin-top: 10px;}
   .home-btn { padding: 18px 46px; border-radius: 60px; border: none; font-size: 18px; font-weight: 900; cursor: pointer; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 8px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; }
   .home-btn:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.3); }
   .home-btn.quiz-btn { background: #fff; color: #1565A0; }
   .home-btn.roleta-btn { background: #1A3E60; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
-
   .back-btn { position: absolute; top: 24px; left: 28px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 14px; font-weight: 800; padding: 10px 22px; border-radius: 40px; cursor: pointer; z-index: 30; transition: all 0.2s; backdrop-filter: blur(5px);}
   .back-btn:hover { background: rgba(255,255,255,0.3); }
+
+  /* Texto Amarelo Brilhante (PC) */
+  .blink-prize { font-size: 30px; color: #FFD700; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 20px; text-shadow: 0 0 10px rgba(255, 215, 0, 0.5); animation: pulseGold 1.5s ease-in-out infinite; text-align: center; }
+  @keyframes pulseGold { 0%, 100% { transform: scale(1); opacity: 0.9; text-shadow: 0 0 5px rgba(255, 215, 0, 0.5); } 50% { transform: scale(1.05); opacity: 1; text-shadow: 0 0 20px rgba(255, 215, 0, 0.8); } }
 
   /* ─── ROLETA ─── */
   #roleta .roleta-wrap { display: flex; flex-direction: column; align-items: center; gap: 28px; z-index: 10; width: 100%; }
@@ -241,63 +158,55 @@
   .spin-btn:disabled { opacity: 0.55; cursor: default; }
   .prize-result { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 3px 12px rgba(0,0,0,0.4); min-height: 48px; text-align: center; }
 
-.blink-prize {
-  font-size: 30px;
-  color: #FFD700; /* Amarelo ouro para destacar o prêmio */
-  font-weight: 800;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 10px;
-  text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-  animation: pulseGold 1.5s ease-in-out infinite;
-}
-
-@keyframes pulseGold {
-  0%, 100% {
-    transform: scale(1);
-    opacity: 0.9;
-    text-shadow: 0 0 5px rgba(255, 215, 0, 0.5);
-  }
-  50% {
-    transform: scale(1.05);
-    opacity: 1;
-    text-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
-  }
-}
-
   /* ─── CONFETTI ─── */
   .confetti-piece { position: fixed; top: -20px; width: 10px; height: 14px; border-radius: 2px; animation: confettiFall linear forwards; pointer-events: none; z-index: 9999; }
   @keyframes confettiFall { 0% { transform: translateX(0) rotate(0deg); opacity: 1; } 100% { transform: translateX(var(--dx)) translateY(110vh) rotate(720deg); opacity: 0; } }
 
-/* ═══════════════════════════════════════════════════
-     RESPONSIVIDADE (MOBILE & TABLETS)
+  /* ═══════════════════════════════════════════════════
+     RESPONSIVIDADE (MOBILE & TABLETS) - APENAS EXCEÇÕES
   ═══════════════════════════════════════════════════ */
   @media (max-width: 768px) {
-    /* Ajuste das Logos */
-    .home-logo { 
-      width: 120px; 
-      height: 120px; 
-      margin-bottom: 20px; 
-      margin-top: 40px; /* Dá espaço para flutuar sem cortar em cima */
+
+    .back-btn { 
+      top: 15px; 
+      left: 15px; 
+      padding: 8px 16px; 
+      font-size: 12px; 
     }
-    .home-logo img { width: 150px !important; }
-    .home-logo span { font-size: 10px; margin-top: -10px !important; }
+    #login .home-content { 
+      padding-top: 80px; /* Empurra o conteúdo para baixo do botão voltar */
+    }
+    #login h2 { 
+      font-size: 32px !important; /* Diminui um pouco o título gigante */
+    }
+    /* Libera a rolagem apenas dentro das caixas principais no celular se for muito pequeno */
+    .home-content { overflow-y: auto; justify-content: flex-start; padding-top: 30px; padding-bottom: 30px; }
     
+    /* Logotipos Mobile (espaço no topo para animação não cortar) */
+    #home .home-logo { width: 120px; height: 120px; margin-top: 40px !important; margin-bottom: 20px; }
+    #home .home-logo img { width: 150px !important; }
+    #home .home-logo span { font-size: 10px; margin-top: -10px !important; }
+    
+    /* Resultado Mobile: Logotipo e Texto */
+    #result .home-logo { width: 90px !important; height: 90px !important; margin-top: 50px !important; margin-bottom: 5px !important; }
+    #result .home-logo img { width: 140px !important; margin-top: 0 !important; }
+    #resultTitle { font-size: 38px !important; margin-bottom: 5px !important; }
+    #resultMsg { font-size: 16px !important; padding: 15px !important; width: 95%; margin-bottom: 15px !important; line-height: 1.4; }
+    #resultAction .home-btn { font-size: 16px !important; padding: 12px 25px !important; }
+
+    /* Logo no Canto Superior Direito (Quiz) */
     .logo-area { top: 15px; right: 15px; }
     .logo-circle { width: 65px; height: 65px; }
     .logo-circle img { width: 100px !important; }
     .logo-circle span { font-size: 6px; margin-top: -8px !important; }
 
-    /* Textos Iniciais */
-    h1.main-title { font-size: 40px; }
-    .home-subtitle { font-size: 16px; padding: 0 10px; }
-    .blink-prize { 
-      font-size: 18px; 
-      margin-bottom: 25px; 
-      text-align: center; /* Força a centralização no telemóvel */
-      width: 100%; 
-      padding: 0 15px; /* Evita que o texto encoste nas bordas do telemóvel */
-    }
+    /* Textos Iniciais e Amarelo */
+    h1.main-title { font-size: 40px; margin-bottom: 5px; }
+    .home-subtitle { font-size: 16px; padding: 0 10px; margin-bottom: 15px; }
+    .blink-prize { font-size: 18px; margin-bottom: 25px; padding: 0 15px; width: 100%; }
+    
+    /* Botões */
+    .home-btns { flex-direction: column; width: 90%; max-width: 300px; }
     .home-btn { padding: 15px 30px; font-size: 16px; width: 100%; justify-content: center; }
 
     /* Login */
@@ -308,62 +217,41 @@
     /* Quiz e Perguntas */
     .quiz-title { top: 80px; font-size: 22px; }
     .q-badge { top: 15px; left: 15px; font-size: 12px; padding: 5px 12px; }
-    .question-box { margin-top: 60px; padding: 20px 15px; font-size: 18px; width: 92%; }
+    .question-box { margin-top: 60px; padding: 20px 15px; font-size: 18px; width: 92%; margin-bottom: 15px; }
     .answers-box { padding: 15px; width: 92%; }
     .answer-item { font-size: 14px; padding: 12px 15px; }
     
-    /* Botões Verdadeiro/Falso empilhados no celular */
+    /* Verdadeiro/Falso empilhados */
     .tf-row { flex-direction: column; gap: 15px; width: 92%; }
     .tf-btn { width: 100%; padding: 15px; font-size: 18px; justify-content: center; }
     .tf-btn .tf-icon { width: 40px; height: 40px; font-size: 20px; }
     
-    /* Elementos visuais e Roleta */
-    .global-logo-bottom { display: none; } /* Oculta a logo gigante do rodapé no mobile */
-    .deco { opacity: 0.15; } /* Deixa as ondas mais suaves para não poluir a tela */
+    /* Ocultar elementos desnecessários no mobile */
+    .global-logo-bottom { display: none; }
+    .deco { opacity: 0.15; }
+    
+    /* Navegação do Quiz */
     .nav-row { bottom: 25px; width: 100%; }
     .nav-btn { font-size: 14px; padding: 12px 25px; }
     
-    #roleta h2 { font-size: 20px; padding: 12px 30px; }
-    .spin-btn { font-size: 16px; padding: 15px 30px; width: 90%; }
+    /* Roleta */
+    #roleta .roleta-wrap { justify-content: center; height: 100%; padding-top: 20px; }
+    #roleta h2 { font-size: 20px; padding: 12px 30px; margin-top: 30px; }
+    .spin-btn { font-size: 16px; padding: 15px 30px; width: 90%; max-width: 300px; margin-bottom: 20px; }
     .prize-result { font-size: 22px; min-height: 35px; }
-
-    /* Ajustes específicos para o ecrã de Resultado / Fim de Jogo no telemóvel */
-    /* Ajustes específicos para o ecrã de Resultado / Fim de Jogo no telemóvel */
-    #result .home-logo { 
-      width: 90px !important; 
-      height: 90px !important; 
-      margin-bottom: 5px !important; 
-      margin-top: 35px !important; /* NOVO: Dá espaço para a animação flutuar sem cortar no topo */
-    }
-    #result .home-logo img { 
-      width: 140px !important; 
-    }
-    #resultTitle { 
-      font-size: 34px !important; /* Reduz o tamanho gigante de 55px */
-      margin-bottom: 5px !important; 
-    }
-    #resultMsg { 
-      font-size: 16px !important; /* Reduz o texto da mensagem */
-      padding: 15px !important; 
-      width: 95%; 
-      margin-bottom: 10px !important; 
-      line-height: 1.4; 
-    }
-    #resultAction .home-btn { 
-      font-size: 16px !important; 
-      padding: 12px 25px !important; 
-    }
   }
 
-  /* Prevenção de quebra quando o teclado virtual do celular abrir */
+  /* Prevenção de quebra com teclado virtual aberto no telemóvel */
   @media (max-height: 650px) {
-    .home-logo, .logo-area, .quiz-title { display: none; }
+    .home-content { padding-top: 10px; }
+    #home .home-logo, #result .home-logo, .logo-area, .quiz-title { display: none; }
     .question-box { margin-top: 20px; padding: 15px; }
     .answers-box { padding: 10px; }
     .nav-row { bottom: 15px; }
+    h1.main-title { font-size: 32px; }
   }
-
 </style>
+
 </head>
 <body>
   <img class="deco deco-tl" src="wave.png" alt="Detalhe de onda topo esquerdo">
@@ -689,9 +577,10 @@ function renderQuestion() {
     for (let i=0; i<4; i++) {
       const el = document.getElementById('ans'+labels[i]);
       el.textContent = labels[i]+') '+q.opts[i];
-      el.className = 'answer-item'; // Reseta as cores
-
-      el.style.opacity = "1"; // Força o texto a voltar a ficar 100% visível
+      
+      // RESET COMPLETO DA CLASSE E DO ESTILO AQUI 👇
+      el.className = 'answer-item'; 
+      el.style.opacity = '1'; // Garante que a opção fique 100% visível na nova pergunta
     }
   } else {
     answersBox.style.display = 'none';

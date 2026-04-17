@@ -2,22 +2,41 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>Quiz do Saneamento – RIC Ambiental</title>
 <link rel="icon" href="drop.png" type="image/png">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-  /* ─── RESET & BASE ─── */
+ /* ─── RESET & BASE ─── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
+  
+  html, body { 
+    position: fixed; /* Trava a tela no lugar, impedindo qualquer scroll */
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: hidden; 
+    font-family: 'Nunito', sans-serif; 
+    background: #0E75A8; 
+    touch-action: none; /* Desativa a capacidade de arrastar a tela pra baixo ou pros lados */
+  }
 
   /* ─── BACKGROUND WRAPPER ─── */
   #app {
-    width: 100vw; height: 100vh;
+    position: absolute; 
+    top: 0; left: 0; right: 0; bottom: 0; 
+    width: 100%; 
+    height: 100%;
     background: linear-gradient(160deg, #1AAAD4 0%, #1590C0 40%, #0E75A8 100%);
-    position: relative; overflow: hidden;
-    display: flex; flex-direction: column;
+    overflow: hidden;
+    display: flex; 
+    flex-direction: column;
+  }
+    
+    background: linear-gradient(160deg, #1AAAD4 0%, #1590C0 40%, #0E75A8 100%);
+    overflow: hidden;
+    display: flex; 
+    flex-direction: column;
   }
 
   /* ─── WAVE PATTERN OVERLAY ─── */
@@ -177,7 +196,17 @@
   .btn-override:hover { background: rgba(255,255,255,0.2); }
 
   /* ─── HOME E RESULTADO ─── */
-  .home-content { display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 10; width: 100%; padding: 0 20px;}
+.home-content { 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    gap: 20px; 
+    z-index: 10; 
+    width: 100%; 
+    padding: 20px;
+    max-height: 100%; /* Limita a altura ao tamanho do ecrã */
+    overflow-y: auto; /* Permite rolar apenas o conteúdo se faltar espaço */
+  }
   .home-logo { margin-bottom: 40px;width: 170px; height: 170px; border: 4px solid rgba(255,255,255,0.9); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 0 0 8px rgba(255,255,255,0.15), 0 20px 60px rgba(0,0,0,0.2); animation: logoFloat 3s ease-in-out infinite; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); }
 @keyframes logoFloat { 
     0%, 100% { transform: translateY(-20px); } /* Posição inicial já começa mais alta */
@@ -239,6 +268,101 @@
   /* ─── CONFETTI ─── */
   .confetti-piece { position: fixed; top: -20px; width: 10px; height: 14px; border-radius: 2px; animation: confettiFall linear forwards; pointer-events: none; z-index: 9999; }
   @keyframes confettiFall { 0% { transform: translateX(0) rotate(0deg); opacity: 1; } 100% { transform: translateX(var(--dx)) translateY(110vh) rotate(720deg); opacity: 0; } }
+
+/* ═══════════════════════════════════════════════════
+     RESPONSIVIDADE (MOBILE & TABLETS)
+  ═══════════════════════════════════════════════════ */
+  @media (max-width: 768px) {
+    /* Ajuste das Logos */
+    .home-logo { 
+      width: 120px; 
+      height: 120px; 
+      margin-bottom: 20px; 
+      margin-top: 40px; /* Dá espaço para flutuar sem cortar em cima */
+    }
+    .home-logo img { width: 150px !important; }
+    .home-logo span { font-size: 10px; margin-top: -10px !important; }
+    
+    .logo-area { top: 15px; right: 15px; }
+    .logo-circle { width: 65px; height: 65px; }
+    .logo-circle img { width: 100px !important; }
+    .logo-circle span { font-size: 6px; margin-top: -8px !important; }
+
+    /* Textos Iniciais */
+    h1.main-title { font-size: 40px; }
+    .home-subtitle { font-size: 16px; padding: 0 10px; }
+    .blink-prize { 
+      font-size: 18px; 
+      margin-bottom: 25px; 
+      text-align: center; /* Força a centralização no telemóvel */
+      width: 100%; 
+      padding: 0 15px; /* Evita que o texto encoste nas bordas do telemóvel */
+    }
+    .home-btn { padding: 15px 30px; font-size: 16px; width: 100%; justify-content: center; }
+
+    /* Login */
+    .cpf-input { font-size: 22px; padding: 12px 20px; }
+    .login-error-box { padding: 12px 15px; }
+    .login-error-box span { font-size: 15px !important; }
+    
+    /* Quiz e Perguntas */
+    .quiz-title { top: 80px; font-size: 22px; }
+    .q-badge { top: 15px; left: 15px; font-size: 12px; padding: 5px 12px; }
+    .question-box { margin-top: 60px; padding: 20px 15px; font-size: 18px; width: 92%; }
+    .answers-box { padding: 15px; width: 92%; }
+    .answer-item { font-size: 14px; padding: 12px 15px; }
+    
+    /* Botões Verdadeiro/Falso empilhados no celular */
+    .tf-row { flex-direction: column; gap: 15px; width: 92%; }
+    .tf-btn { width: 100%; padding: 15px; font-size: 18px; justify-content: center; }
+    .tf-btn .tf-icon { width: 40px; height: 40px; font-size: 20px; }
+    
+    /* Elementos visuais e Roleta */
+    .global-logo-bottom { display: none; } /* Oculta a logo gigante do rodapé no mobile */
+    .deco { opacity: 0.15; } /* Deixa as ondas mais suaves para não poluir a tela */
+    .nav-row { bottom: 25px; width: 100%; }
+    .nav-btn { font-size: 14px; padding: 12px 25px; }
+    
+    #roleta h2 { font-size: 20px; padding: 12px 30px; }
+    .spin-btn { font-size: 16px; padding: 15px 30px; width: 90%; }
+    .prize-result { font-size: 22px; min-height: 35px; }
+
+    /* Ajustes específicos para o ecrã de Resultado / Fim de Jogo no telemóvel */
+    /* Ajustes específicos para o ecrã de Resultado / Fim de Jogo no telemóvel */
+    #result .home-logo { 
+      width: 90px !important; 
+      height: 90px !important; 
+      margin-bottom: 5px !important; 
+      margin-top: 35px !important; /* NOVO: Dá espaço para a animação flutuar sem cortar no topo */
+    }
+    #result .home-logo img { 
+      width: 140px !important; 
+    }
+    #resultTitle { 
+      font-size: 34px !important; /* Reduz o tamanho gigante de 55px */
+      margin-bottom: 5px !important; 
+    }
+    #resultMsg { 
+      font-size: 16px !important; /* Reduz o texto da mensagem */
+      padding: 15px !important; 
+      width: 95%; 
+      margin-bottom: 10px !important; 
+      line-height: 1.4; 
+    }
+    #resultAction .home-btn { 
+      font-size: 16px !important; 
+      padding: 12px 25px !important; 
+    }
+  }
+
+  /* Prevenção de quebra quando o teclado virtual do celular abrir */
+  @media (max-height: 650px) {
+    .home-logo, .logo-area, .quiz-title { display: none; }
+    .question-box { margin-top: 20px; padding: 15px; }
+    .answers-box { padding: 10px; }
+    .nav-row { bottom: 15px; }
+  }
+
 </style>
 </head>
 <body>
@@ -566,6 +690,8 @@ function renderQuestion() {
       const el = document.getElementById('ans'+labels[i]);
       el.textContent = labels[i]+') '+q.opts[i];
       el.className = 'answer-item'; // Reseta as cores
+
+      el.style.opacity = "1"; // Força o texto a voltar a ficar 100% visível
     }
   } else {
     answersBox.style.display = 'none';
@@ -687,8 +813,13 @@ function initWheel() {
     wheelCanvas = document.getElementById('rouletteCanvas');
     wheelCtx = wheelCanvas.getContext('2d');
   }
-  const size = Math.min(window.innerWidth * 0.5, 420);
-  wheelCanvas.width = size; wheelCanvas.height = size;
+  
+  // NOVA LÓGICA: Se for celular, a roleta ocupa 85% da tela. Se for PC, ocupa 50%.
+  const isMobile = window.innerWidth <= 768;
+  const size = isMobile ? Math.min(window.innerWidth * 0.85, 340) : Math.min(window.innerWidth * 0.5, 420);
+  
+  wheelCanvas.width = size; 
+  wheelCanvas.height = size;
   drawWheel();
 }
 

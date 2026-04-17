@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiz do Saneamento – RIC Ambiental</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&family=Nunito+Sans:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  /* ─── RESET & BASE ─── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 100%; height: 100%; overflow: hidden; font-family: 'Nunito', sans-serif; }
+
+  /* ─── BACKGROUND WRAPPER ─── */
+  #app {
+    width: 100vw; height: 100vh;
+    background: linear-gradient(160deg, #1AAAD4 0%, #1590C0 40%, #0E75A8 100%);
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+
+  /* ─── WAVE PATTERN OVERLAY ─── */
+  #app::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image: repeating-radial-gradient(ellipse at 60% 50%,
+      transparent 0px, transparent 28px, rgba(255,255,255,0.045) 28px, rgba(255,255,255,0.045) 30px
+    );
+    background-size: 200px 80px;
+    pointer-events: none; z-index: 0;
+  }
+
+  /* ─── ELEMENTOS GLOBAIS FLUIDOS (ONDAS) ─── */
+  .deco { position: absolute; pointer-events: none; z-index: 5; opacity: 0.95; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.15)); }
+  .deco-tl { top: 0; left: -90px; rotate: 180deg; width: 25vw; min-width: 150px; max-width: 300px; }
+  .deco-br { bottom: 0; right: -90px; width: 35vw; min-width: 200px; max-width: 400px; }
+  
+  .global-logo-bottom {
+    position: absolute; bottom: -120px; left: 50%; transform: translateX(-50%);
+    z-index: 30; pointer-events: none; display: flex; justify-content: center; align-items: center;
+  }
+  .global-logo-bottom img { height: 300px; width: auto; object-fit: contain; }
+
+  /* ─── NOVOS ATIVOS DECORATIVOS E ANIMAÇÕES ─── */
+  .deco-ativo4 { top: 15%; right: -2%; width: 22vw; min-width: 150px; max-width: 280px; opacity: 0.35; animation: floatHorizontal 12s ease-in-out infinite alternate; }
+  .deco-ativo5 { bottom: 12%; left: -2%; width: 18vw; min-width: 120px; max-width: 220px; opacity: 0.45; animation: floatHorizontalReverse 15s ease-in-out infinite alternate; }
+  .deco-ativo3 { top: 35%; right: 3%; height: 30vh; width: auto; min-height: 150px; max-height: 350px; opacity: 0.25; animation: floatVertical 10s ease-in-out infinite alternate; }
+  
+  @keyframes floatHorizontal { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(-25px, 15px) rotate(3deg); } }
+  @keyframes floatHorizontalReverse { 0% { transform: translate(0, 0) rotate(0deg); } 100% { transform: translate(25px, -15px) rotate(-3deg); } }
+  @keyframes floatVertical { 0% { transform: translateY(0); } 100% { transform: translateY(-30px); } }
+
+  .deco-ativo4-alt { top: 45%; left: 2%; width: 15vw; min-width: 100px; max-width: 200px; opacity: 0.25; animation: floatAlt4 14s ease-in-out infinite alternate; }
+  .deco-ativo5-alt { top: 8%; right: 35%; width: 12vw; min-width: 80px; max-width: 150px; opacity: 0.3; animation: floatAlt5 11s ease-in-out infinite alternate; }
+  .deco-ativo3-alt { bottom: 25%; right: 18%; height: 18vh; width: auto; min-height: 90px; opacity: 0.2; animation: floatAlt3 13s ease-in-out infinite alternate; }
+
+  .deco-ativo5-extra1 { top: 30%; left: 15%; width: 10vw; min-width: 80px; max-width: 140px; opacity: 0.15; animation: floatExtra1 17s ease-in-out infinite alternate; }
+  .deco-ativo4-extra2 { top: 12%; right: 20%; width: 14vw; min-width: 100px; max-width: 180px; opacity: 0.2; animation: floatExtra2 20s ease-in-out infinite alternate; }
+  .deco-ativo3-extra1 { bottom: 35%; left: -3%; height: 22vh; width: auto; min-height: 120px; opacity: 0.15; animation: floatExtra3 22s ease-in-out infinite alternate; }
+  .deco-ativo5-extra2 { bottom: 18%; left: 28%; width: 11vw; min-width: 90px; max-width: 160px; opacity: 0.25; animation: floatExtra4 15s ease-in-out infinite alternate; }
+  .deco-ativo4-extra3 { top: 18%; left: 8%; width: 24vw; min-width: 180px; max-width: 320px; opacity: 0.12; animation: floatExtra5 18s ease-in-out infinite alternate; }
+  .deco-ativo3-extra2 { top: 25%; left: 25%; height: 28vh; width: auto; min-height: 150px; opacity: 0.1; animation: floatExtra6 25s ease-in-out infinite alternate; }
+
+  @keyframes floatExtra5 { 0% { transform: translate(0, 0) rotate(12deg) scale(0.95); } 100% { transform: translate(25px, 20px) rotate(8deg) scale(1.05); } }
+  @keyframes floatExtra6 { 0% { transform: translate(0, 0) rotate(-35deg); } 100% { transform: translate(-20px, 25px) rotate(-30deg); } }
+  @keyframes floatExtra1 { 0% { transform: translate(0, 0) rotate(15deg) scale(0.9); } 100% { transform: translate(-15px, 20px) rotate(10deg) scale(1); } }
+  @keyframes floatExtra2 { 0% { transform: translate(0, 0) rotate(-65deg); } 100% { transform: translate(20px, -10px) rotate(-60deg); } }
+  @keyframes floatExtra3 { 0% { transform: translate(0, 0) rotate(-15deg); } 100% { transform: translate(15px, 25px) rotate(-5deg); } }
+  @keyframes floatExtra4 { 0% { transform: translate(0, 0) rotate(150deg); } 100% { transform: translate(-10px, 15px) rotate(155deg); } }
+  @keyframes floatAlt4 { 0% { transform: translate(0, 0) rotate(-20deg); } 100% { transform: translate(15px, -15px) rotate(-15deg); } }
+  @keyframes floatAlt5 { 0% { transform: translate(0, 0) rotate(180deg); } 100% { transform: translate(-20px, 10px) rotate(175deg); } }
+  @keyframes floatAlt3 { 0% { transform: translate(0, 0) rotate(90deg); } 100% { transform: translate(10px, 20px) rotate(95deg); } }
+
+  /* ─── SCREENS ─── */
+  .screen {
+    position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    z-index: 10; opacity: 0; pointer-events: none;
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    transform: translateX(50px);
+  }
+  .screen.active { opacity: 1; pointer-events: all; transform: translateX(0); }
+  .screen.exit { opacity: 0; transform: translateX(-50px); }
+
+  /* ─── ELEMENTOS UI ─── */
+  .logo-area { position: absolute; top: 22px; right: 30px; z-index: 20; display: flex; align-items: center; gap: 10px; }
+  .logo-circle {
+    width: 100px; height: 100px; border: 3px solid rgba(255,255,255,0.9); border-radius: 50%;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(255,255,255,0.1); backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    animation: logoFloatQuiz 3.5s ease-in-out infinite; /* A animação fica aqui */
+}
+  .logo-circle span { font-size: 10px; font-weight: 900; color: #fff; letter-spacing: 1px; }
+
+  .quiz-title {
+    font-size: clamp(28px, 4.5vw, 58px); font-weight: 900; color: #fff;
+    text-shadow: 0 3px 12px rgba(0,0,0,0.25); letter-spacing: 2px; text-align: center;
+    text-transform: uppercase; position: absolute; top: 30px; left: 50%; transform: translateX(-50%); z-index: 5;
+  }
+
+  /* ─── COMPONENTES DO QUIZ ─── */
+  .question-box {
+    background: rgba(100,210,240,0.85); border-radius: 22px; padding: 28px 44px;
+    max-width: 880px; width: 88%; text-align: center; font-size: clamp(18px, 2.6vw, 32px); font-weight: 800; color: #1A3E60;
+    margin-bottom: 22px; box-shadow: 0 8px 32px rgba(0,80,140,0.18); backdrop-filter: blur(8px);
+  }
+
+  .answers-box {
+    background: rgba(255,255,255,0.15); border: 2px solid rgba(255,255,255,0.3); border-radius: 20px;
+    padding: 26px 44px; max-width: 880px; width: 88%; box-shadow: 0 6px 24px rgba(0,80,140,0.14); backdrop-filter: blur(8px);
+  }
+  .answer-item {
+    font-size: clamp(16px, 2.2vw, 26px); font-weight: 700; color: #fff; background: rgba(0,0,0,0.1);
+    padding: 12px 20px; margin-bottom: 10px; border-radius: 10px;
+    transition: all 0.3s; cursor: pointer; border: 2px solid transparent;
+  }
+  .answer-item:hover:not(.disabled) { background: rgba(255,255,255,0.2); transform: scale(1.02); }
+  .answer-item.correct { background: #2DC653; color: #fff; border-color: #fff; transform: scale(1.03); box-shadow: 0 5px 15px rgba(45, 198, 83, 0.4); }
+  .answer-item.wrong { background: #E53030; color: #fff; opacity: 0.7; }
+  .answer-item.disabled { pointer-events: none; }
+
+  .tf-row { display: flex; gap: 36px; justify-content: center; }
+  .tf-btn {
+    display: flex; align-items: center; gap: 16px; padding: 18px 44px; border-radius: 60px; border: 2px solid transparent; cursor: pointer;
+    font-size: clamp(20px,2.5vw,30px); font-weight: 900; letter-spacing: 2px; box-shadow: 0 8px 24px rgba(0,0,0,0.22); transition: all 0.3s;
+  }
+  .tf-btn:hover:not(:disabled) { transform: scale(1.05); }
+  .tf-btn.verdadeiro { background: rgba(45, 198, 83, 0.8); color: #fff; backdrop-filter: blur(5px);}
+  .tf-btn.falso { background: rgba(229, 48, 48, 0.8); color: #fff; backdrop-filter: blur(5px);}
+  .tf-btn .tf-icon { width: 52px; height: 52px; border-radius: 50%; background: rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 28px; }
+  .tf-btn.correct-tf { background: #2DC653; border-color:#fff; transform: scale(1.08); box-shadow: 0 0 0 5px rgba(255,255,255,0.5); }
+  .tf-btn.wrong-tf { background: #E53030; opacity: 0.5; transform: scale(0.95); }
+  .tf-btn:disabled { cursor: default; }
+
+  .nav-row { position: absolute; bottom: 85px; left: 50%; transform: translateX(-50%); display: flex; gap: 18px; z-index: 20; }
+  .nav-btn {
+    padding: 14px 40px; border-radius: 50px; border: 2px solid #fff;
+    background: #fff; color: #1A6090; font-size: 16px; font-weight: 800; cursor: pointer; letter-spacing: 1px;
+    transition: all 0.2s; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+  .nav-btn:hover { background: #f0f0f0; transform: scale(1.04); }
+  .nav-btn.hidden { display: none; }
+
+  .q-badge { position: absolute; top: 80px; left: 25px; background: rgba(0, 0, 0, 0.2); border: 1px solid rgba(255,255,255,0.3); color: #fff; font-weight: 800; font-size: 14px; padding: 8px 18px; border-radius: 30px; z-index: 20; backdrop-filter: blur(4px); }
+  .progress-bar { position: absolute; bottom: 0; left: 0; right: 0; height: 6px; background: rgba(255,255,255,0.2); z-index: 20; }
+  .progress-fill { height: 100%; background: #4DD0E1; transition: width 0.6s; border-radius: 3px; }
+  .explanation { font-size: 16px; font-weight: 700; color: #fff; text-align: center; max-width: 700px; padding: 12px 20px; background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3); border-radius: 15px; margin-top: 15px; opacity: 0; transition: opacity 0.5s; backdrop-filter: blur(5px); }
+  .explanation.show { opacity: 1; }
+
+  /* ─── TELA DE LOGIN (CPF) ─── */
+  /* ─── TELA DE LOGIN (CPF) ─── */
+  .cpf-input {
+    padding: 16px 25px; border-radius: 40px; border: 2px solid #fff;
+    background: rgba(255,255,255,0.15); color: #fff; font-size: 26px; font-weight: 900;
+    text-align: center; outline: none; margin-bottom: 30px; width: 100%; max-width: 380px;
+    backdrop-filter: blur(5px); transition: all 0.3s;
+  }
+  .cpf-input::placeholder { color: rgba(255,255,255,0.7); font-weight: 700; font-size: 20px;}
+  .cpf-input:focus { background: rgba(255,255,255,0.25); box-shadow: 0 0 15px rgba(255,255,255,0.3); }
+
+  .login-error-box {
+    margin-top: 25px; background: #0F3A56; /* Azul escuro do seu print */
+    padding: 18px 25px; border-radius: 12px; display: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2); width: 100%; max-width: 450px;
+    text-align: center;
+  }
+  
+  .btn-override {
+    margin-top: 15px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.3);
+    color: #fff; border-radius: 20px; padding: 6px 15px; cursor: pointer; font-size: 12px; font-weight: bold;
+    transition: all 0.2s;
+  }
+  .btn-override:hover { background: rgba(255,255,255,0.2); }
+
+  /* ─── HOME E RESULTADO ─── */
+  .home-content { display: flex; flex-direction: column; align-items: center; gap: 20px; z-index: 10; width: 100%; padding: 0 20px;}
+  .home-logo { margin-bottom: 40px;width: 170px; height: 170px; border: 4px solid rgba(255,255,255,0.9); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; box-shadow: 0 0 0 8px rgba(255,255,255,0.15), 0 20px 60px rgba(0,0,0,0.2); animation: logoFloat 3s ease-in-out infinite; background: rgba(255,255,255,0.1); backdrop-filter: blur(4px); }
+@keyframes logoFloat { 
+    0%, 100% { transform: translateY(-20px); } /* Posição inicial já começa mais alta */
+    50% { transform: translateY(-40px); }      /* Ponto mais alto da flutuação */
+
+  } 
+  @keyframes logoFloatQuiz { 
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); } 
+}
+  .home-logo span { font-size: 13px; font-weight: 900; color: #fff; letter-spacing: 2px; }
+  h1.main-title { font-size: clamp(36px,6vw,80px); font-weight: 900; color: #fff; text-shadow: 0 4px 20px rgba(0,0,0,0.3); letter-spacing: 3px; text-align: center; line-height: 1.1; text-transform: uppercase; margin-bottom: 0;}
+  .home-subtitle { font-size: 20px; color: rgba(255,255,255,0.9); font-weight: 600; text-align: center; margin-bottom: 10px;}
+  
+  .home-btns { display: flex; gap: 18px; flex-wrap: wrap; justify-content: center; }
+  .home-btn { padding: 18px 46px; border-radius: 60px; border: none; font-size: 18px; font-weight: 900; cursor: pointer; letter-spacing: 1px; transition: all 0.3s; box-shadow: 0 8px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 10px; }
+  .home-btn:hover { transform: scale(1.05) translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.3); }
+  .home-btn.quiz-btn { background: #fff; color: #1565A0; }
+  .home-btn.roleta-btn { background: #1A3E60; color: #fff; border: 2px solid rgba(255,255,255,0.5); }
+
+  .back-btn { position: absolute; top: 24px; left: 28px; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-size: 14px; font-weight: 800; padding: 10px 22px; border-radius: 40px; cursor: pointer; z-index: 30; transition: all 0.2s; backdrop-filter: blur(5px);}
+  .back-btn:hover { background: rgba(255,255,255,0.3); }
+
+  /* ─── ROLETA ─── */
+  #roleta .roleta-wrap { display: flex; flex-direction: column; align-items: center; gap: 28px; z-index: 10; width: 100%; }
+  #roleta h2 { background: rgba(255,255,255,0.9); border-radius: 18px; padding: 16px 50px; font-size: clamp(22px,4vw,36px); font-weight: 900; color: #1A3E60; text-transform: uppercase; box-shadow: 0 6px 24px rgba(0,0,0,0.15); }
+  .wheel-container { position: relative; display: flex; align-items: center; justify-content: center; }
+  #rouletteCanvas { border-radius: 50%; box-shadow: 0 10px 60px rgba(0,0,0,0.35), 0 0 0 10px rgba(255,255,255,0.25); }
+  .wheel-pointer { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); z-index: 5; pointer-events: none; }
+  .spin-btn { padding: 18px 60px; border-radius: 60px; border: none; background: #fff; color: #1565A0; font-size: 22px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 30px rgba(0,0,0,0.25); transition: all 0.2s; }
+  .spin-btn:hover:not(:disabled) { transform: scale(1.06); }
+  .spin-btn:disabled { opacity: 0.55; cursor: default; }
+  .prize-result { font-size: 32px; font-weight: 900; color: #fff; text-shadow: 0 3px 12px rgba(0,0,0,0.4); min-height: 48px; text-align: center; }
+
+  /* ─── CONFETTI ─── */
+  .confetti-piece { position: fixed; top: -20px; width: 10px; height: 14px; border-radius: 2px; animation: confettiFall linear forwards; pointer-events: none; z-index: 9999; }
+  @keyframes confettiFall { 0% { transform: translateX(0) rotate(0deg); opacity: 1; } 100% { transform: translateX(var(--dx)) translateY(110vh) rotate(720deg); opacity: 0; } }
+</style>
+</head>
+<body>
+  <img class="deco deco-tl" src="wave.png" alt="Detalhe de onda topo esquerdo">
+  <img class="deco deco-br" src="wave 2.png" alt="Detalhe de onda baixo direito">
+  <img class="deco deco-ativo4" src="Ativo 4.png" alt="Ondas Claras de fundo">
+  <img class="deco deco-ativo5" src="Ativo 5.png" alt="Ondas Laranjas de fundo">
+  <img class="deco deco-ativo3" src="Ativo 3.png" alt="Ondas Verticais de fundo">
+  <img class="deco deco-ativo4-alt" src="Ativo 4.png" alt="Ondas Claras Replicadas">
+  <img class="deco deco-ativo5-alt" src="Ativo 5.png" alt="Ondas Laranjas Replicadas">
+  <img class="deco deco-ativo3-alt" src="Ativo 3.png" alt="Ondas Verticais Replicadas">
+  <img class="deco deco-ativo5-extra1" src="Ativo 5.png" alt="Ondas Laranjas Fundo 1">
+  <img class="deco deco-ativo4-extra2" src="Ativo 4.png" alt="Ondas Claras Fundo 2">
+  <img class="deco deco-ativo3-extra1" src="Ativo 3.png" alt="Ondas Verticais Fundo 3">
+  <img class="deco deco-ativo5-extra2" src="Ativo 5.png" alt="Ondas Laranjas Fundo 4">
+  <img class="deco deco-ativo4-extra3" src="Ativo 4.png" alt="Ondas Claras Topo Esquerdo">
+  <img class="deco deco-ativo3-extra2" src="Ativo 3.png" alt="Ondas Verticais Topo Esquerdo">
+
+  <div class="global-logo-bottom">
+    <img src="Ricambiental_logo-18.png" alt="Logo RIC Ambiental">
+  </div>
+
+<div id="app">
+
+  <div class="screen active" id="home">
+    <div class="home-content">
+      <div class="home-logo" title="RIC Ambiental">
+        <img src="Ricambiental_logo-25.png" alt="Logo RIC Ambiental" style="width: 250px; height: auto; object-fit: contain; margin-top: 5px;">
+        <span style="margin-top: -20px;">RIC AMBIENTAL</span>
+      </div>
+      <h1 class="main-title">Quiz do<br>Saneamento</h1>
+      <p class="home-subtitle">🌊 Teste seus conhecimentos sobre água e saneamento!</p>
+      <div class="home-btns">
+        <button class="home-btn quiz-btn" onclick="goTo('login')">🎯 Iniciar Quiz</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="screen" id="login">
+    <button class="back-btn" onclick="goTo('home')">← Voltar</button>
+    <div class="home-content">
+      <h2 style="color:#fff; font-size: 38px; text-shadow: 0 2px 10px rgba(0,0,0,0.3); margin-bottom: 5px;">Identificação</h2>
+      <p style="color:rgba(255,255,255,0.9); font-size: 18px; text-align:center; max-width:450px; margin-bottom: 25px;">
+        Para jogar e concorrer a prêmios, digite seu CPF.<br><b>Regra: Apenas 1 tentativa por dia!</b>
+      </p>
+      
+      <input type="tel" id="cpfInput" class="cpf-input" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)" autocomplete="off">
+      
+      <button class="home-btn quiz-btn" onclick="validateAndStart()">Começar o Quiz →</button>
+      <div id="loginError" class="login-error-box"></div>    </div>
+  </div>
+
+  <div class="screen" id="result">
+    <div class="home-content">
+      <div class="home-logo" style="width: 130px; height: 130px; margin-bottom: -10px;">
+        <img src="Ricambiental_logo-25.png" alt="Logo RIC" style="width: 80px; margin-top: 5px;">
+      </div>
+      <h1 class="main-title" id="resultTitle" style="font-size: 55px;">Fim de Jogo!</h1>
+      <p id="resultMsg" style="color:#fff; font-size: 24px; font-weight: 700; text-align:center; max-width: 600px; margin-bottom: 20px; background: rgba(0,0,0,0.2); padding: 20px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.3); backdrop-filter: blur(5px);"></p>
+      <div id="resultAction" class="home-btns"></div>
+    </div>
+  </div>
+
+  <div class="screen" id="roleta">
+    <button class="back-btn" onclick="goTo('home')">← Finalizar</button>
+    <div class="roleta-wrap">
+      <h2>🎡 Roleta de Prêmios</h2>
+      <div class="wheel-container">
+        <canvas id="rouletteCanvas" width="420" height="420"></canvas>
+        <div class="wheel-pointer">
+          <svg width="60" height="72" viewBox="0 0 60 72" xmlns="http://www.w3.org/2000/svg">
+            <ellipse cx="30" cy="44" rx="22" ry="22" fill="#1A4B6E" opacity="0.9"/>
+            <ellipse cx="30" cy="44" rx="15" ry="15" fill="#1A9FD4"/>
+            <path d="M30 14 Q24 34 30 44 Q36 34 30 14Z" fill="#1A4B6E"/>
+          </svg>
+        </div>
+      </div>
+      <div class="prize-result" id="prizeResult">&nbsp;</div>
+      <button class="spin-btn" id="spinBtn" onclick="spinWheel()">🎰 GIRAR ROLETA!</button>
+    </div>
+  </div>
+
+  <div class="screen" id="quiz">
+    <div class="q-badge" id="qBadge">Pergunta 1 / 3</div>
+
+    <div class="logo-area">
+      <div class="logo-circle">
+        <img src="Ricambiental_logo-25.png" alt="Logo RIC Ambiental" style="width: 180px; height: auto; object-fit: contain; margin-top: 5px;">
+        <span style="margin-top: -12px;">RIC AMBIENTAL</span>
+      </div>
+    </div>
+
+    <div class="quiz-title" id="quizTitle">Quiz do Saneamento</div>
+
+    <div class="question-box" id="questionBox"></div>
+
+    <div class="answers-box" id="answersBox" style="display:none">
+      <div class="answer-item" id="ansA" onclick="selectAnswer(0)"></div>
+      <div class="answer-item" id="ansB" onclick="selectAnswer(1)"></div>
+      <div class="answer-item" id="ansC" onclick="selectAnswer(2)"></div>
+      <div class="answer-item" id="ansD" onclick="selectAnswer(3)"></div>
+    </div>
+
+    <div class="tf-row" id="tfRow" style="display:none">
+      <button class="tf-btn verdadeiro" id="btnVerdadeiro" onclick="selectTF('V')">
+        <div class="tf-icon">✔</div> VERDADEIRO
+      </button>
+      <button class="tf-btn falso" id="btnFalso" onclick="selectTF('F')">
+        <div class="tf-icon">✖</div> FALSO
+      </button>
+    </div>
+
+    <div class="explanation" id="explanation"></div>
+
+    <div class="nav-row">
+      <button class="nav-btn hidden" id="nextBtn" onclick="nextQ()">Próxima Pergunta →</button>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  </div>
+
+</div>
+
+<script>
+/* ═══════════════════════════════════════════════════
+   BANCO DE QUESTÕES (RIC Ambiental)
+═══════════════════════════════════════════════════ */
+const dbQuestions = [
+  { type: 'mc', q: 'O hidrômetro serve para:', opts: ['Decorar a casa','Medir o consumo de água','Aumentar a pressão','Filtrar a água'], ans: 1 },
+  { type: 'mc', q: 'Qual atitude ajuda a economizar água?', opts: ['Deixar a torneira aberta','Fechar ao escovar os dentes','Lavar calçada todo dia','Ignorar vazamentos'], ans: 1 },
+  { type: 'mc', q: 'Se o hidrômetro continua girando com tudo fechado, isso pode indicar:', opts: ['Economia','Vazamento','Pressão alta','Chuva'], ans: 1 },
+  { type: 'mc', q: 'O que NÃO deve ser jogado no vaso sanitário?', opts: ['Papel higiênico em excesso','Lixo','Lenço umedecido','Todas as alternativas'], ans: 3 },
+  { type: 'mc', q: 'O esgoto tratado é devolvido para:', opts: ['As casas','A rua','O meio ambiente','A caixa d\'água'], ans: 2 },
+  { type: 'mc', q: 'A caixa d\'água serve para:', opts: ['Medir consumo','Armazenar água','Tratar esgoto','Produzir água'], ans: 1 },
+  { type: 'mc', q: 'Jogar óleo na pia pode causar:', opts: ['Limpeza dos canos','Entupimento','Economia','Nada'], ans: 1 },
+  { type: 'mc', q: 'A conta de água é baseada em:', opts: ['Número de pessoas','Consumo registrado','Tamanho da casa','Clima'], ans: 1 },
+  { type: 'mc', q: 'O que é saneamento básico?', opts: ['Apenas coleta de lixo','Serviços como água, esgoto e drenagem','Somente tratamento de água','Limpeza de ruas'], ans: 1 },
+  { type: 'mc', q: 'Qual destas atitudes ajuda a evitar desperdício?', opts: ['Tomar banhos longos','Usar mangueira para tudo','Consertar vazamentos rapidamente','Deixar torneiras pingando'], ans: 2 },
+  { type: 'mc', q: 'Qual é a função do tratamento de esgoto?', opts: ['Produzir água potável','Evitar enchentes','Retirar poluentes antes de devolver à natureza','Aumentar o consumo de água'], ans: 2 },
+  { type: 'mc', q: 'Banho ideal para economizar água é:', opts: ['30 minutos','Rápido e consciente','Só aos domingos','Quanto mais demorado, melhor'], ans: 1 },
+  { type: 'mc', q: 'Qual é o superpoder do saneamento?', opts: ['Fazer chover','Proteger a saúde das pessoas','Criar rios','Produzir energia'], ans: 1 },
+  { type: 'mc', q: 'De onde vem a água que chega às casas?', opts: ['Diretamente da chuva','De rios, represas ou fontes tratadas','Do mar sem tratamento','Do esgoto tratado'], ans: 1 },
+  { type: 'mc', q: 'Quem é responsável pelos serviços de saneamento na cidade?', opts: ['Apenas os moradores','Somente o governo federal','RIC Ambiental','Empresas privadas apenas'], ans: 2 },
+  { type: 'mc', q: 'O que pode causar entupimento na rede de esgoto?', opts: ['Água limpa','Óleo, gordura e lixo','Ar','Vapor'], ans: 1 },
+  { type: 'mc', q: 'Água potável é aquela que:', opts: ['Tem cor bonita','Pode ser consumida com segurança','Vem da chuva','Está gelada'], ans: 1 },
+  { type: 'mc', q: 'Se você vê um vazamento na rua, o que fazer?', opts: ['Ignorar','Tirar foto só','Avisar a concessionária','Passar por cima'], ans: 2 },
+  { type: 'tf', q: '"Se a água é transparente, ela sempre é própria para consumo."', ans: 'F', explanation: '💧 MITO! Água transparente pode conter microrganismos invisíveis perigosos.' },
+  { type: 'tf', q: '"Pequenos vazamentos podem aumentar a conta de água."', ans: 'V', explanation: '✅ VERDADEIRO! O desperdício contínuo impacta muito o consumo registrado.' },
+  { type: 'tf', q: '"A água da chuva pode ser aproveitada para algumas atividades."', ans: 'V', explanation: '✅ VERDADEIRO! Pode ser usada para limpeza e irrigação, por exemplo.' },
+  { type: 'tf', q: '"O esgoto precisa ser tratado antes de voltar para a natureza."', ans: 'V', explanation: '✅ VERDADEIRO! O tratamento evita poluição e doenças no meio ambiente.' },
+  { type: 'tf', q: '"Jogar lixo no bueiro pode causar enchentes."', ans: 'V', explanation: '✅ VERDADEIRO! O lixo impede o escoamento da água e provoca alagamentos.' },
+  { type: 'tf', q: '"Água potável é um recurso infinito."', ans: 'F', explanation: '💧 MITO! A água potável é limitada e precisa ser preservada por todos.' },
+  { type: 'tf', q: '"A caixa d\'água deve ser limpa regularmente."', ans: 'V', explanation: '✅ VERDADEIRO! A limpeza periódica garante a qualidade da água consumida.' }
+];
+
+/* ═══════════════════════════════════════════════════
+   ESTADOS E REGRAS DE NEGÓCIO
+═══════════════════════════════════════════════════ */
+let currentScreen = 'home';
+let currentQ = 0;
+let score = 0;
+let answered = false;
+let sessionQuestions = [];
+const QTD_PERGUNTAS = 3; // Regra: 3 perguntas por participante
+const ACERTOS_MINIMOS = 2; // Regra: Mínimo 2 acertos para a Roleta
+
+function goTo(id) {
+  const prev = document.getElementById(currentScreen);
+  prev.classList.add('exit');
+  setTimeout(() => { prev.classList.remove('active','exit'); }, 400);
+
+  currentScreen = id;
+  const next = document.getElementById(id);
+  
+  if (id === 'login') {
+    document.getElementById('cpfInput').value = "";
+    document.getElementById('loginError').style.display = "none";
+  }
+
+  setTimeout(() => { next.classList.add('active'); }, 50);
+  if (id === 'roleta') initWheel();
+}
+
+/* ═══════════════════════════════════════════════════
+   VALIDAÇÃO DE CPF E INÍCIO DO QUIZ
+═══════════════════════════════════════════════════ */
+function maskCPF(i) {
+   var v = i.value;
+   if(isNaN(v[v.length-1])){ i.value = v.substring(0, v.length-1); return; }
+   i.setAttribute("maxlength", "14");
+   if (v.length == 3 || v.length == 7) i.value += ".";
+   if (v.length == 11) i.value += "-";
+}
+
+function validateAndStart() {
+  const rawCpf = document.getElementById('cpfInput').value.replace(/\D/g, "");
+  const err = document.getElementById('loginError');
+  err.style.display = "none";
+
+  // 1. Recupera o banco de dados atualizado
+  let registroGeral = JSON.parse(localStorage.getItem('ric_saneamento_jogadores') || "{}");
+
+  // ─── TRUQUE DE ADMIN: MOSTRAR TOTAL E BAIXAR PLANILHA ───
+  if (rawCpf === "00000000000") {
+      // SOMA REAL: Calcula o total somando as tentativas de todos os CPFs na planilha
+      let totalReal = Object.values(registroGeral).reduce((acc, curr) => acc + (curr.tentativas || 0), 0);
+
+      let csvContent = "CPF;Data da Ultima Participacao;Total de Tentativas\n";
+      for (let cpf in registroGeral) {
+          let cpfFormatado = cpf.replace(/(\d{3})(\d{3})(\d{3})(\d{2})/, "$1.$2.$3-$4");
+          let dadosUsuario = registroGeral[cpf];
+          csvContent += `${cpfFormatado};${dadosUsuario.data || "N/A"};${dadosUsuario.tentativas || 1}\n`;
+      }
+
+      let blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
+      let link = document.createElement("a");
+      link.setAttribute("href", URL.createObjectURL(blob));
+      link.setAttribute("download", "Relatorio_Participantes_RIC.csv");
+      link.click();
+
+      // O Pop-up agora mostra o totalReal (soma da planilha)
+      alert(`📊 ESTATÍSTICA DO ESTANDE\nTotal de participações contabilizadas: ${totalReal}\n\nPlanilha gerada com sucesso!`);
+      document.getElementById('cpfInput').value = "";
+      return;
+  }
+
+  // Validar preenchimento
+  if (rawCpf.length !== 11) {
+      err.innerHTML = `<span style="color:#FF4B4B; font-weight:900; font-size:18px;">❌ CPF Inválido!</span><br><span style="color:#FFF; font-size:16px;">Por favor, digite o CPF completo.</span>`;
+      err.style.display = "block";
+      return;
+  }
+
+  // Regra de 1 tentativa por dia
+  const hoje = new Date().toLocaleDateString('pt-BR');
+
+  if (registroGeral[rawCpf] && registroGeral[rawCpf].data === hoje) {
+      err.innerHTML = `
+        <span style="color:#FF4B4B; font-weight:900; font-size:18px;">❌ CPF já registrado hoje!</span><br>
+        <span style="color:#FFF; font-size:16px; font-weight:600;">Você só tem 1 tentativa por dia. Volte amanhã!</span><br>
+        <button class="btn-override" onclick="autorizarExcecao('${rawCpf}')">🔑 Autorizar Exceção</button>
+      `;
+      err.style.display = "block";
+      return;
+  }
+
+  // --- LOGICA DE REGISTRO UNIFICADA ---
+  let dadosExistentes = registroGeral[rawCpf] || { tentativas: 0 };
+  
+  // Atualiza o registro individual
+  registroGeral[rawCpf] = { 
+      data: hoje, 
+      tentativas: (dadosExistentes.tentativas || 0) + 1 
+  };
+
+  // Salva no LocalStorage
+  localStorage.setItem('ric_saneamento_jogadores', JSON.stringify(registroGeral));
+  
+  // Atualiza o contador global somando tudo de novo para garantir sincronia
+  let novoTotalGeral = Object.values(registroGeral).reduce((acc, curr) => acc + (curr.tentativas || 0), 0);
+  localStorage.setItem('ric_saneamento_total', novoTotalGeral);
+
+  setupQuiz();
+}
+
+// ─── FUNÇÃO PARA LIBERAR O JOGADOR NOVAMENTE ───
+function autorizarExcecao(cpfBloqueado) {
+    let senha = prompt("⚠️ Acesso Restrito\nDigite a senha para liberar uma nova tentativa:");
+    
+    if (senha === "ric2026") {
+        let registroGeral = JSON.parse(localStorage.getItem('ric_saneamento_jogadores') || "{}");
+        
+        if (registroGeral[cpfBloqueado]) {
+            // Apenas "limpa" a data para o validador deixar passar, mas mantém o objeto
+            registroGeral[cpfBloqueado].data = "liberado_pelo_admin"; 
+            localStorage.setItem('ric_saneamento_jogadores', JSON.stringify(registroGeral));
+        }
+        
+        document.getElementById('loginError').style.display = "none";
+        validateAndStart(); 
+    } else if (senha !== null) {
+        alert("❌ Senha incorreta.");
+    }
+}
+
+/* ═══════════════════════════════════════════════════
+   LÓGICA DO JOGO (EMBARALHAMENTO E EXIBIÇÃO)
+═══════════════════════════════════════════════════ */
+function setupQuiz() {
+  // Embaralha todas as questões do banco
+  let shuffled = [...dbQuestions].sort(() => 0.5 - Math.random());
+  // Pega apenas 3
+  sessionQuestions = shuffled.slice(0, QTD_PERGUNTAS);
+  
+  currentQ = 0;
+  score = 0;
+  goTo('quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = sessionQuestions[currentQ];
+  answered = false;
+
+  document.getElementById('qBadge').textContent = `Pergunta ${currentQ+1} de ${QTD_PERGUNTAS}`;
+  document.getElementById('progressFill').style.width = (((currentQ+1)/QTD_PERGUNTAS)*100) + '%';
+  document.getElementById('nextBtn').classList.add('hidden'); // Esconde botão de próxima
+
+  const qBox = document.getElementById('questionBox');
+  qBox.style.animation = 'none'; void qBox.offsetWidth; qBox.style.animation = '';
+  qBox.textContent = q.q;
+
+  const answersBox = document.getElementById('answersBox');
+  const tfRow = document.getElementById('tfRow');
+  const explanation = document.getElementById('explanation');
+  explanation.classList.remove('show');
+
+  if (q.type === 'mc') {
+    answersBox.style.display = 'block';
+    tfRow.style.display = 'none';
+    const labels = ['A','B','C','D'];
+    for (let i=0; i<4; i++) {
+      const el = document.getElementById('ans'+labels[i]);
+      el.textContent = labels[i]+') '+q.opts[i];
+      el.className = 'answer-item'; // Reseta as cores
+    }
+  } else {
+    answersBox.style.display = 'none';
+    tfRow.style.display = 'flex';
+    document.getElementById('btnVerdadeiro').className = 'tf-btn verdadeiro';
+    document.getElementById('btnFalso').className = 'tf-btn falso';
+    document.getElementById('btnVerdadeiro').disabled = false;
+    document.getElementById('btnFalso').disabled = false;
+  }
+}
+
+// Quando clica em alternativa A, B, C, D
+function selectAnswer(selectedIndex) {
+  if (answered) return;
+  answered = true;
+  
+  const q = sessionQuestions[currentQ];
+  const labels = ['A','B','C','D'];
+
+  for (let i=0; i<4; i++) {
+    const el = document.getElementById('ans'+labels[i]);
+    el.classList.add('disabled'); // Impede duplo clique
+    
+    if (i === q.ans) {
+      el.classList.add('correct');
+    } else if (i === selectedIndex) {
+      el.classList.add('wrong');
+    } else {
+      el.style.opacity = "0.5";
+    }
+  }
+
+  if (selectedIndex === q.ans) {
+    score++;
+    launchConfetti(8);
+  }
+
+  // Mostra botão de continuar
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+// Quando clica em V ou F
+function selectTF(choice) {
+  if (answered) return;
+  answered = true;
+  
+  const q = sessionQuestions[currentQ];
+  const btnV = document.getElementById('btnVerdadeiro');
+  const btnF = document.getElementById('btnFalso');
+  btnV.disabled = true; btnF.disabled = true;
+
+  if (choice === q.ans) {
+    score++;
+    if (choice === 'V') btnV.classList.add('correct-tf'); else btnF.classList.add('correct-tf');
+    launchConfetti(12);
+  } else {
+    if (choice === 'V') { btnV.classList.add('wrong-tf'); btnF.classList.add('correct-tf'); }
+    else { btnF.classList.add('wrong-tf'); btnV.classList.add('correct-tf'); }
+  }
+
+  const exp = document.getElementById('explanation');
+  exp.textContent = q.explanation;
+  exp.classList.add('show');
+
+  // Mostra botão de continuar
+  document.getElementById('nextBtn').classList.remove('hidden');
+}
+
+function nextQ() {
+  if (currentQ < QTD_PERGUNTAS - 1) { 
+    currentQ++; 
+    renderQuestion(); 
+  } else {
+    finishQuiz();
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   FINALIZAÇÃO (SUCESSO / FALHA)
+═══════════════════════════════════════════════════ */
+function finishQuiz() {
+  goTo('result');
+  const title = document.getElementById('resultTitle');
+  const msg = document.getElementById('resultMsg');
+  const action = document.getElementById('resultAction');
+
+  if (score >= ACERTOS_MINIMOS) {
+      title.textContent = "Aprovado! 🏆";
+      title.style.color = "#76FF03";
+      msg.innerHTML = `Excelente! Você acertou <b>${score} de ${QTD_PERGUNTAS}</b> perguntas e garantiu seu passe para a Roleta de Prêmios da RIC Ambiental.`;
+      action.innerHTML = `<button class="home-btn roleta-btn" onclick="goTo('roleta')" style="font-size:22px; padding: 20px 50px;">🎡 Ir para a Roleta!</button>`;
+      launchConfetti(40);
+  } else {
+      title.textContent = "Poxa vida... 💦";
+      title.style.color = "#FFB3B3";
+      msg.innerHTML = `Você acertou <b>${score} de ${QTD_PERGUNTAS}</b> perguntas.<br><br>Para ir à Roleta, era necessário acertar pelo menos ${ACERTOS_MINIMOS}. Estude mais sobre saneamento e tente de novo em um próximo evento!`;
+      action.innerHTML = `<button class="home-btn quiz-btn" onclick="goTo('home')">← Finalizar Atendimento</button>`;
+  }
+}
+
+/* ═══════════════════════════════════════════════════
+   ROLETA DE PRÊMIOS E ANIMAÇÕES
+═══════════════════════════════════════════════════ */
+const prizes = ['Caneta','Garrafa Squeeze','Chaveiro Abridor','Chaveiro Espelho'];
+const prizeColors = ['#4ECDC4','#45B7D1','#6B9DA0','#A8D8EA'];
+let wheelAngle = 0;
+let spinning = false;
+let wheelCanvas, wheelCtx;
+
+function initWheel() {
+  // Sempre reseta o botão e o texto do prêmio para o próximo jogador
+  const spinBtn = document.getElementById('spinBtn');
+  spinBtn.innerHTML = '🎰 GIRAR ROLETA!';
+  spinBtn.setAttribute('onclick', 'spinWheel()');
+  spinBtn.disabled = false;
+  document.getElementById('prizeResult').innerHTML = '&nbsp;';
+
+  if (!wheelCanvas) { 
+    wheelCanvas = document.getElementById('rouletteCanvas');
+    wheelCtx = wheelCanvas.getContext('2d');
+  }
+  const size = Math.min(window.innerWidth * 0.5, 420);
+  wheelCanvas.width = size; wheelCanvas.height = size;
+  drawWheel();
+}
+
+function drawWheel() {
+  const ctx = wheelCtx;
+  const W = wheelCanvas.width;
+  const cx = W/2, cy = W/2, R = W/2 - 10;
+  ctx.clearRect(0,0,W,W);
+
+  const n = prizes.length;
+  const slice = (Math.PI*2) / n;
+
+  ctx.beginPath(); ctx.arc(cx,cy,R+8,0,Math.PI*2); ctx.fillStyle = '#1A3E60'; ctx.fill();
+
+  for (let i=0; i<n; i++) {
+    const start = wheelAngle + i*slice;
+    const end = start + slice;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,start,end); ctx.closePath();
+    ctx.fillStyle = prizeColors[i]; ctx.fill();
+    ctx.strokeStyle = '#fff'; ctx.lineWidth = 2; ctx.stroke();
+
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(start + slice/2); ctx.textAlign = 'right';
+    ctx.fillStyle = '#1A3E60'; ctx.font = `bold ${Math.max(14, W*0.038)}px Nunito`;
+    ctx.letterSpacing = '1px'; ctx.fillText(prizes[i], R - 18, 6); ctx.restore();
+  }
+
+  ctx.beginPath(); ctx.arc(cx,cy,W*0.08,0,Math.PI*2); ctx.fillStyle = '#1A4B6E'; ctx.fill();
+  ctx.beginPath(); ctx.arc(cx,cy,W*0.055,0,Math.PI*2); ctx.fillStyle = '#1A9FD4'; ctx.fill();
+}
+
+function spinWheel() {
+  if (spinning) return;
+  spinning = true;
+  const spinBtn = document.getElementById('spinBtn');
+  spinBtn.disabled = true;
+  document.getElementById('prizeResult').innerHTML = '&nbsp;';
+
+  const extraSpins = (5 + Math.floor(Math.random()*5)) * Math.PI * 2;
+  const stopAt = Math.random() * Math.PI * 2;
+  const totalRotation = extraSpins + stopAt;
+  const duration = 3500 + Math.random()*1200;
+  const startAngle = wheelAngle;
+  const startTime = performance.now();
+
+  function easeOut(t) { return 1 - Math.pow(1-t,3); }
+
+  function frame(now) {
+    const elapsed = now - startTime;
+    const t = Math.min(elapsed/duration, 1);
+    wheelAngle = startAngle + totalRotation * easeOut(t);
+    drawWheel();
+    if (t < 1) { requestAnimationFrame(frame); return; }
+
+    spinning = false;
+
+    // Determina o prêmio
+    const n = prizes.length;
+    const slice = (Math.PI*2)/n;
+    const pointerAngle = -Math.PI/2; 
+    let normalized = ((pointerAngle - wheelAngle) % (Math.PI*2) + Math.PI*2) % (Math.PI*2);
+    const idx = Math.floor(normalized / slice) % n;
+    
+    document.getElementById('prizeResult').textContent = '🎉 ' + prizes[idx] + '!';
+    
+    // Transforma o botão para retornar ao Início
+    spinBtn.innerHTML = '🏠 Retornar ao Início';
+    spinBtn.setAttribute('onclick', "goTo('home')");
+    spinBtn.disabled = false;
+
+    // Lança a chuva turbinada de confetes (150 unidades)
+    launchConfetti(150);
+  }
+
+  requestAnimationFrame(frame);
+}
+
+function launchConfetti(count) {
+  const colors = ['#FFD700','#FF4081','#00E5FF','#76FF03','#FF6D00','#E040FB','#FFFFFF'];
+  for (let i=0; i<count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div'); el.className = 'confetti-piece';
+      
+      // Espalha randomicamente por 100% da largura da tela
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.background = colors[Math.floor(Math.random()*colors.length)];
+      
+      // Aumenta a abertura lateral (drift) do confete caindo
+      el.style.setProperty('--dx', (Math.random()*600-300)+'px');
+      
+      // Cai um pouco mais devagar para um efeito mais bonito (2s a 4s)
+      el.style.animationDuration = (2 + Math.random()*2) + 's';
+      el.style.animationDelay = (Math.random()*0.8) + 's';
+      
+      // Deixa os confetes ligeiramente maiores
+      el.style.width = (10+Math.random()*10)+'px'; 
+      el.style.height = (15+Math.random()*10)+'px';
+      el.style.borderRadius = Math.random()>.5 ? '50%' : '2px';
+      
+      document.body.appendChild(el); 
+      el.addEventListener('animationend', () => el.remove());
+    }, i * 20); // Intervalo de 20ms para sair mais como uma "explosão" contínua
+  }
+}
+</script>
+</body>
+</html>

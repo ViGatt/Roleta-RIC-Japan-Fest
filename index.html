@@ -299,7 +299,7 @@
         Para jogar e concorrer a prêmios, digite seu CPF.<br><b>Regra: Apenas 1 tentativa por dia!</b>
       </p>
       
-      <input type="tel" id="cpfInput" class="cpf-input" placeholder="000.000.000-00" maxlength="14" oninput="maskCPF(this)" autocomplete="off">
+      <input type="password" id="cpfInput" class="cpf-input" placeholder="***.***.***-**" maxlength="14" oninput="maskCPF(this)" autocomplete="off" inputmode="numeric" pattern="[0-9]*">
       
       <button class="home-btn quiz-btn" onclick="validateAndStart()">Começar o Quiz →</button>
       <div id="loginError" class="login-error-box"></div>    </div>
